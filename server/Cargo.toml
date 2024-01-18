@@ -19,13 +19,14 @@ askama_axum = "0.4.0"
 axum = "0.7.3"
 chronos = "0.0.1"
 clap = { version = "4.4.12", features = ["derive"] }
+color-eyre = "0.6.2"
 dotenv = "0.15.0"
 hyper = { version = "1.1.0", features = ["full"] }
 lazy_static = "1.4.0"
 log = "0.4.20"
 serde = { version = "1.0.194", features = ["derive"] }
 serde_json = "1.0.110"
-sqlx = {version = "0.7.3", features= ["uuid","chrono", "runtime-tokio"]}
+sqlx = { version = "0.7.3", features = ["uuid", "chrono", "runtime-tokio", "runtime-async-std-native-tls", "postgres"] }
 tokio = { version = "1.35.1", features = ["full"] }
 tower = "0.4.13"
 tower-http = { version = "0.5.0", features = ["fs","trace","cors"] }

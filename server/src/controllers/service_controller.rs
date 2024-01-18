@@ -45,3 +45,15 @@ pub async fn greeting_handler(Query(params): Query<QueryData>) -> String {
         (_, _) => "Hello, World!".to_string(),
     }
 }
+
+pub async fn health_check_handler() -> impl IntoResponse {
+    const MESSAGE: &str = "API Services";
+
+    let json_response = serde_json::json!({
+        "status": "ok",
+        "message": MESSAGE
+
+    });
+
+    Json(json_response)
+}
