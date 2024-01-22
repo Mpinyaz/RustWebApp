@@ -1,5 +1,6 @@
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
+use eyre::bail;
 
 type ErrorResponse = (StatusCode, String);
 
@@ -18,4 +19,12 @@ pub async fn handle_error(error: PageError) -> impl IntoResponse {
             .to_string()
     });
     (status_code, message)
+}
+
+pub async fn handling_errors() -> Result<(), (StatusCode, String)> {
+    will_fail().map_err(|error| (StatusCode::INTERNAL_SERVER_ERROR, error.to_string()))
+}
+
+fn will_fail() -> eyre::Result<()> {
+    bail!("I always fail");
 }
