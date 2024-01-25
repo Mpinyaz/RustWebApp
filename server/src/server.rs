@@ -1,9 +1,11 @@
+mod config;
 mod controllers;
 mod db;
 mod errorhandling;
 mod models;
 mod routes;
 
+use crate::config::load_config;
 use axum::Router;
 use clap::Parser;
 use models::state::AppState;
@@ -18,14 +20,8 @@ use tracing_subscriber::util::SubscriberInitExt;
 
 #[tokio::main]
 async fn main() {
-    // initialize tracing
-    tracing_subscriber::registry()
-        .with(tracing_subscriber::EnvFilter::new(
-            std::env::var("RUST_LOG")
-                .unwrap_or_else(|_| "server=debug,tower_http=debug".to_owned()),
-        ))
-        .with(tracing_subscriber::fmt::layer())
-        .init();
+    // Initialize tracing
+    init_tracing();
 
     let opt = Cli::parse();
     let appaddr_settings = match (opt.host, opt.port) {
@@ -65,4 +61,15 @@ async fn main() {
     } else {
         panic!("Invalid IP address. Server not started.");
     }
+}
+
+fn init_tracing() {
+    // initialize tracing
+    tracing_subscriber::registry()
+        .with(tracing_subscriber::EnvFilter::new(
+            std::env::var("RUST_LOG")
+                .unwrap_or_else(|_| "server=debug,tower_http=debug".to_owned()),
+        ))
+        .with(tracing_subscriber::fmt::layer())
+        .init();
 }
