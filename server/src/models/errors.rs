@@ -32,6 +32,7 @@ impl ApiError {
 
     pub fn log(self, error: impl Error) -> Self {
         tracing::error!("{error}");
+        self
     }
 }
 

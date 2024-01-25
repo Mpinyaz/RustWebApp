@@ -6,6 +6,7 @@ use hyper::Method;
 use tower_http::cors::CorsLayer;
 use tower_http::services::ServeDir;
 
+pub mod errors;
 pub mod json;
 
 pub fn init_router() -> Router<AppStateType> {
