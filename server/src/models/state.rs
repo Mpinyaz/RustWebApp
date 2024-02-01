@@ -1,12 +1,11 @@
 // use super::users::*;
-use serde::{Deserialize, Serialize};
-use server::AppAddrSettings;
+use sqlx::postgres::PgPool;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Debug, Clone)]
 pub struct AppState {
-    pub appaddr_settings: AppAddrSettings,
+    pub pool: PgPool,
 }
 
 pub type AppStateType = Arc<RwLock<AppState>>;
