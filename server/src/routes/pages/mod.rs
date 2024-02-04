@@ -1,4 +1,4 @@
-use crate::controllers::service_controller::*;
+use crate::handlers::main_handlers::*;
 use crate::models::state::AppStateType;
 use axum::routing::get;
 use axum::Router;
@@ -11,6 +11,21 @@ pub mod json;
 
 pub fn init_router() -> Router<AppStateType> {
     let assets_path = std::env::current_dir().unwrap();
+    let cors = CorsLayer::new()
+        .allow_credentials(true)
+        .allow_methods(vec![
+            axum::http::Method::OPTIONS,
+            axum::http::Method::GET,
+            axum::http::Method::POST,
+            axum::http::Method::PUT,
+            axum::http::Method::DELETE,
+        ])
+        .allow_headers(vec![
+            axum::http::header::ORIGIN,
+            axum::http::header::AUTHORIZATION,
+            axum::http::header::ACCEPT,
+        ]);
+
     Router::new()
         .nest_service(
             "/assets",
@@ -19,5 +34,5 @@ pub fn init_router() -> Router<AppStateType> {
         .route("/", get(home))
         .route("/name/:name", get(name_handler))
         .route("/greeting", get(greeting_handler))
-        .layer(CorsLayer::new().allow_methods([Method::GET, Method::POST]))
+        .layer(cors)
 }

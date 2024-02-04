@@ -1,9 +1,9 @@
 use clap::Parser;
 use dotenv::dotenv;
 use serde::{Deserialize, Serialize};
-use std::env;
 use std::net::Ipv4Addr;
 use std::net::Ipv6Addr;
+use std::env;
 use tokio::sync::OnceCell;
 
 // Setup the command line interface with clap.
@@ -29,7 +29,7 @@ pub struct AppAddrSettings {
     /// Port to listen on.
     pub port: Option<String>,
 }
-impl AppAddrSettings {
+impl ServerConfig {
     pub fn new(host: Option<String>, port: Option<String>) -> Self {
         match (host, port) {
             (Some(host), Some(port)) => Self {
@@ -69,11 +69,11 @@ impl AppAddrSettings {
         }
     }
 }
-impl Default for AppAddrSettings {
+impl Default for ServerConfig {
     fn default() -> Self {
         match dotenv() {
             Ok(_) => Self {
-                host: Some(std::env::var("APP_HOST").unwrap_or("0.0.0.0".to_string())),
+                host: Some(std::env::var("APP_HOST").unwrap_or("127.0.0.1".to_string())),
                 port: Some(std::env::var("APP_PORT").unwrap_or("3000".to_string())),
             },
             Err(err) => {
@@ -86,8 +86,8 @@ impl Default for AppAddrSettings {
 // Define a struct to represent our server configuration
 #[derive(Debug, Clone)]
 struct ServerConfig {
-    host: String,
-    port: String,
+    host: Option<String>,
+    port: Option<String>,
 }
 
 // Define a struct to represent our database configuration
@@ -118,38 +118,43 @@ impl Config {
     //     Ok(Self { server, database })
     // }
     pub fn db_url(&self) -> &str {
-        &self.database
+        &self.database.url
     }
 
     pub fn server_host(&self) -> &str {
-        &self.server.host
+        self.server.host.as_deref().unwrap()
     }
 
     pub fn server_port(&self) -> &str {
-        &self.server.port
+        self.server.port.as_deref().unwrap()
     }
 }
 
 // Create a static variable to hold our configuration once loaded
-pub static CONFIG: OnceCell<Config> = OnceCell::new();
+pub static CONFIG: OnceCell<Config> = OnceCell::const_new();
 
 // Asynchronously load our configuration
 
-pub async fn load_config() -> Result<(), dotenv::Error> {
+pub async fn load_config() -> Config {
     dotenv().ok();
 
-    let server = ServerConfig {
-        host: env::var("APP_HOST").unwrap_or_else(|_| "127.0.0.1".to_string()),
-        port: env::var("APP_PORT").unwrap_or_else(|_| "8080".to_string()),
+    let opt = Cli::parse();
+    let server = match (opt.host, opt.port) {
+        (Some(host), Some(port)) => {
+            ServerConfig::new(Some(host), Some(port.parse::<String>().unwrap()))
+        }
+        (Some(host), None) => ServerConfig::new(Some(host), ServerConfig::default().port),
+        (None, Some(port)) => ServerConfig::new(ServerConfig::default().host, Some(port)),
+        (None, None) => ServerConfig::default(),
     };
 
     let database = DatabaseConfig {
         url: env::var("DATABASE_URL").expect("DATABASE_URL must be set"),
     };
 
-    let config = Config { server, database };
+    Config { server, database }
+}
 
-    CONFIG
-        .set(config)
-        .map_err(|_| dotenv::Error::from(dotenv::errorkind::Msg("Failed to set config")))
+pub async fn config() -> &'static Config {
+    CONFIG.get_or_init(load_config).await
 }

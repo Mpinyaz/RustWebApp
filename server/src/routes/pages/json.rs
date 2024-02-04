@@ -1,4 +1,4 @@
-use crate::controllers::service_controller::json_handler;
+use crate::handlers::main_handlers::json_handler;
 use crate::models::state::AppStateType;
 
 use axum::{
