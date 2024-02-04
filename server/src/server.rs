@@ -1,10 +1,9 @@
 mod db;
-mod errorhandling;
-mod handlers;
 mod models;
 mod routes;
 mod utils;
 
+use crate::utils::config::load_config;
 use axum::Router;
 use models::state::AppState;
 
