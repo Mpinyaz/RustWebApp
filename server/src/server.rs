@@ -1,12 +1,12 @@
+// Axum web app server
 mod db;
 mod models;
 mod routes;
 mod utils;
 
-use crate::utils::config::load_config;
 use axum::Router;
-use models::state::AppState;
 
+use models::state::AppState;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 use tower::ServiceBuilder;
