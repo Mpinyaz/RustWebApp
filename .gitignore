@@ -11,3 +11,4 @@ node_modules
 # Misc
 /data/**
 !/data/.gitkeep
+.DS_Store
