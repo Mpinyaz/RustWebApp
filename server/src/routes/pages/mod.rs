@@ -1,6 +1,5 @@
 use crate::handlers::main_handlers::*;
 use crate::models::state::AppState;
-use app::*;
 use axum::routing::get;
 use axum::Router;
 // use hyper::Method;
@@ -10,7 +9,7 @@ use tower_http::services::ServeDir;
 pub mod errors;
 pub mod json;
 
-pub fn init_router() -> Router {
+pub fn init_router() -> Router<AppState> {
     let assets_path = std::env::current_dir().unwrap();
     let cors = CorsLayer::new()
         .allow_credentials(true)
