@@ -1,9 +1,14 @@
-use axum::extract::{Path, Query, State};
-use axum::response::{Html, IntoResponse, Response};
-use axum::{http::StatusCode, Json};
-
+use axum::extract::{Path, Query,Extension, State};
+use axum::body::Body as AxumBody;
+use axum::response::{IntoResponse, Response};
+use axum::{http::Request, Json};
+use leptos::*;
+use leptos_axum::handle_server_fns_with_context;
 use crate::models::templates::{HomeTemplate, HtmlTemplate, NameTemplate};
 use serde::{Deserialize, Serialize};
+use crate::models::state::AppState;
+use app::*;
+use std::sync::Arc;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RequestData {
@@ -56,4 +61,35 @@ pub async fn health_check_handler() -> impl IntoResponse {
     });
 
     Json(json_response)
+}
+
+pub async fn leptos_routes_handler(
+    State(app_state): State<AppState>,
+    req: Request<AxumBody>,
+) -> Response {
+    let handler = leptos_axum::render_app_async_with_context(
+
+        app_state.leptos.clone(),
+        move || {
+            provide_context(app_state.pool.clone());
+        },
+        move || view! { <App /> },
+    );
+    handler(req).await.into_response()
+}
+
+pub async fn server_fn_handler(
+    State(app_state): State<AppState>,
+    Extension(options): Extension<Arc<LeptosOptions>>,
+    request: Request<AxumBody>,
+) -> impl IntoResponse {
+    handle_server_fns_with_context(
+        move || {
+            provide_context(app_state.pool.clone());
+            provide_context(app_state.leptos.clone());
+            provide_context((*options).clone());
+        },
+        request,
+    )
+    .await
 }
