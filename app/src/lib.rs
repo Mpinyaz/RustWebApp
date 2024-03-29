@@ -9,7 +9,6 @@ pub fn App() -> impl IntoView {
 
         <Router>
             <Route path="" view=HomePage/>
-            <Route path="/*any" view=NotFound/>
         </Router>
     }
 }

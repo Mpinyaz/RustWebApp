@@ -2,17 +2,23 @@
 resolver = "2"
 members = ["server", "app", "client"]
 
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = 'z'
 
 [workspace.dependencies]
 askama = { version = "0.12.1", features = ["with-axum"] }
 askama_axum = "0.4.0"
 axum = "0.7.3"
 chrono = { version = "0.4.32", features = ["serde"] }
+console_error_panic_hook = { version = "0.1.7" }
 clap = { version = "4.4.12", features = ["derive"] }
+cfg-if = { version = "1.0.0" }
 dotenv = "0.15.0"
 hyper = { version = "1.1.0", features = ["full"] }
 lazy_static = "1.4.0"
-log = "0.4.20"
+log = "0.4.21"
 serde = { version = "1.0.194", features = ["derive"] }
 serde_json = "1.0.110"
 sqlx = { version = "0.7.3", features = [
@@ -32,3 +38,22 @@ leptos = { version = "0.6", features = ["nightly"] }
 leptos_meta = { version = "0.6.9", features = ["nightly"] }
 leptos_router = { version = "0.6.9", features = ["nightly"] }
 leptos_axum = { version = "0.6.9" }
+
+
+[[workspace.metadata.leptos]]
+bin-package = "server"
+lib-package = "client"
+site-pkg-dir = "pkg"
+# style-file = "style/main.scss"
+# assets-dir = "public"
+# site-addr = "127.0.0.1:4141"
+reload-port = 4142
+end2end-cmd = "npx playwright test"
+end2end-dir = "end2end"
+browserquery = "defaults"
+watch = false
+env = "DEV"
+bin-features = ["ssr"]
+bin-default-features = false
+lib-features = ["hydrate"]
+lib-default-features = false

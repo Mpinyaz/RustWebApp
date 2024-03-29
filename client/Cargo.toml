@@ -8,6 +8,9 @@ edition = "2021"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-app = { path = "../app" }
-leptos = { version = "0.6.5", features = ["csr"] }
+app = { path = "../app", default-features = false, features = ["hydrate"] }
+leptos = { version = "0.6.5", features = ["hydrate"] }
 leptos_router = { version = "0.6.5", features = ["csr"] }
+
+[features]
+ssr = ["leptos_router/ssr", "leptos/ssr"]
