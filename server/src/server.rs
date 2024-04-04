@@ -6,18 +6,19 @@ mod utils;
 
 mod handlers;
 use app::*;
-use axum::routing::{get, post};
+use axum::routing::get;
 use axum::Router;
 use handlers::main_handlers::*;
 use leptos::*;
 use leptos_axum::{generate_route_list, LeptosRoutes};
 use models::state::AppState;
+use sqlx::migrate::Migrator;
 use tracing::info;
 use utils::config::config;
 use utils::db_pool::get_database_pool;
 use utils::tracing::init_tracing;
 
-
+static MIGRATOR: Migrator = sqlx::migrate!();
 // #[cfg(feature = "ssr")]
 
 #[tokio::main]
@@ -28,6 +29,7 @@ async fn main() {
     let config = config().await;
     // Establish database connection pool
     let db_pool = get_database_pool(config.db_url()).await.unwrap();
+    MIGRATOR.run(&db_pool).await.unwrap();
 
     if config.server.is_valid_ip().unwrap() {
         info!("🚀 Server starting...");

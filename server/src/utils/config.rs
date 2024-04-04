@@ -1,9 +1,9 @@
 use clap::Parser;
 use dotenv::dotenv;
 use serde::{Deserialize, Serialize};
+use std::env;
 use std::net::Ipv4Addr;
 use std::net::Ipv6Addr;
-use std::env;
 use tokio::sync::OnceCell;
 
 // Setup the command line interface with clap.
@@ -85,15 +85,15 @@ impl Default for ServerConfig {
 }
 // Define a struct to represent our server configuration
 #[derive(Debug, Clone)]
-struct ServerConfig {
-    host: Option<String>,
-    port: Option<String>,
+pub struct ServerConfig {
+    pub host: Option<String>,
+    pub port: Option<String>,
 }
 
 // Define a struct to represent our database configuration
 #[derive(Debug, Clone)]
-struct DatabaseConfig {
-    url: String,
+pub struct DatabaseConfig {
+    pub url: String,
 }
 
 #[derive(Debug, Clone)]
@@ -103,20 +103,6 @@ pub struct Config {
 }
 
 impl Config {
-    // pub fn from_env() -> Result<Self, dotenv::Error> {
-    //     dotenv().ok();
-    //
-    //     let server = ServerConfig {
-    //         host: env::var("HOST").unwrap_or_else(|_| "127.0.0.1".into()),
-    //         port: env::var("PORT").unwrap_or_else(|_| "8080".into()),
-    //     };
-    //
-    //     let database = DatabaseConfig {
-    //         url: env::var("DATABASE_URL").expect("DATABASE_URL must be set"),
-    //     };
-    //
-    //     Ok(Self { server, database })
-    // }
     pub fn db_url(&self) -> &str {
         &self.database.url
     }
