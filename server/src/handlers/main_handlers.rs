@@ -73,7 +73,7 @@ pub async fn leptos_routes_handler(
         move || {
             provide_context(app_state.pool.clone());
         },
-        move || view! { <App /> },
+        move || view! { <App/> },
     );
     handler(req).await.into_response()
 }

@@ -4,11 +4,16 @@ use leptos_router::*;
 
 #[component]
 pub fn App() -> impl IntoView {
+    provide_meta_context();
     view! {
-        <Title text="Leptos Router Example" />
+        <Title text="Leptos Router Example"/>
 
         <Router>
-            <Route path="" view=HomePage/>
+            <main>
+                <Routes>
+                    <Route path="" view=HomePage/>
+                </Routes>
+            </main>
         </Router>
     }
 }

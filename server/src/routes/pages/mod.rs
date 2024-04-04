@@ -30,7 +30,7 @@ pub fn init_router() -> Router<AppState> {
             "/assets",
             ServeDir::new(format!("{}/assets", assets_path.to_str().unwrap())),
         )
-        .route("/", get(home))
+        // .route("/", get(home))
         .route("/name/:name", get(name_handler))
         .route("/greeting", get(greeting_handler))
         .layer(cors)

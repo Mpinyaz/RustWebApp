@@ -34,7 +34,7 @@ async fn main() {
         // Start your server here
         let conf = get_configuration(None).await.unwrap();
         let leptos_options = conf.leptos_options;
-        let routes = generate_route_list(|| view! {<App/>});
+        let routes = generate_route_list(|| view! { <App/> });
         let app_state = AppState {
             pool: db_pool.clone(),
             leptos: leptos_options,

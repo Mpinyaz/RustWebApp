@@ -9,11 +9,8 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 app = { path = "../app", default-features = false, features = ["hydrate"] }
-leptos = { version = "0.6.5", features = ["hydrate"] }
-leptos_router = { version = "0.6.5", features = ["csr"] }
+leptos = { workspace = true, features = ["hydrate"] }
 log.workspace = true
 console_error_panic_hook.workspace = true
 console_log.workspace = true
-
-[features]
-ssr = ["leptos_router/ssr", "leptos/ssr"]
+wasm-bindgen.workspace = true
