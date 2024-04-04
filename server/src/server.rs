@@ -36,10 +36,10 @@ async fn main() {
         // Start your server here
         let conf = get_configuration(None).await.unwrap();
         let leptos_options = conf.leptos_options;
-        let routes = generate_route_list(|| view! { <App/> });
+        let routes = generate_route_list(App);
         let app_state = AppState {
             pool: db_pool.clone(),
-            leptos: leptos_options,
+            leptos: leptos_options.clone(),
         };
 
         // .leptos_routes(&leptos_options,routes, App)
@@ -49,12 +49,12 @@ async fn main() {
             .merge(routes::pages::init_router())
             .with_state(app_state);
 
-        let listener = tokio::net::TcpListener::bind(config.server.bind_host())
+        let listener = tokio::net::TcpListener::bind(&leptos_options.site_addr)
             .await
             .unwrap();
         info!(
             "Server is intialized and listening on: localhost:{}",
-            config.server_port()
+            &leptos_options.site_addr
         );
         axum::serve(listener, app).await.unwrap();
     } else {

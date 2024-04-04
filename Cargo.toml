@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["server", "app", "client"]
+members = ["app", "client", "server"]
 
 [profile.release]
 codegen-units = 1
@@ -45,6 +45,7 @@ wasm-bindgen = "=0.2.92"
 name = "rust-web-axum"
 bin-package = "server"
 lib-package = "client"
+output-name = "leptos-app"
 site-pkg-dir = "pkg"
 site-root = "target/site"
 # style-file = "style/main.scss"

@@ -51,8 +51,8 @@ impl ServerConfig {
     pub fn bind_host(&self) -> String {
         format!(
             "{}:{}",
-            self.host.as_deref().unwrap_or("0.0.0.0"),
-            self.port.as_deref().unwrap_or("3000")
+            self.host.as_deref().unwrap_or("127.0.0.1"),
+            self.port.as_deref().unwrap_or("4141")
         )
     }
 
@@ -74,7 +74,7 @@ impl Default for ServerConfig {
         match dotenv() {
             Ok(_) => Self {
                 host: Some(std::env::var("APP_HOST").unwrap_or("127.0.0.1".to_string())),
-                port: Some(std::env::var("APP_PORT").unwrap_or("3000".to_string())),
+                port: Some(std::env::var("APP_PORT").unwrap_or("4141".to_string())),
             },
             Err(err) => {
                 println!("Error loading .env file: {:?}", err);
