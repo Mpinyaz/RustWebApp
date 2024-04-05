@@ -1,9 +1,8 @@
 use clap::Parser;
 use dotenv::dotenv;
-use serde::{Deserialize, Serialize};
+use leptos::*;
 use std::env;
-use std::net::Ipv4Addr;
-use std::net::Ipv6Addr;
+use std::net::{Ipv4Addr, Ipv6Addr};
 use tokio::sync::OnceCell;
 
 // Setup the command line interface with clap.
@@ -19,16 +18,6 @@ pub struct Cli {
     pub port: Option<String>,
 }
 
-/// App-configurable settings.
-#[derive(Clone, Debug, Deserialize, Serialize)]
-
-pub struct AppAddrSettings {
-    /// IP to bind to.
-    pub host: Option<String>,
-
-    /// Port to listen on.
-    pub port: Option<String>,
-}
 impl ServerConfig {
     pub fn new(host: Option<String>, port: Option<String>) -> Self {
         match (host, port) {
@@ -48,11 +37,18 @@ impl ServerConfig {
         }
     }
 
-    pub fn bind_host(&self) -> String {
+    pub async fn bind_host(&self) -> String {
+        let conf = get_configuration(None).await.unwrap();
+        let leptos_options = conf.leptos_options;
+
         format!(
             "{}:{}",
-            self.host.as_deref().unwrap_or("127.0.0.1"),
-            self.port.as_deref().unwrap_or("4141")
+            self.host
+                .as_deref()
+                .unwrap_or(&leptos_options.site_addr.ip().to_string()),
+            self.port
+                .as_deref()
+                .unwrap_or(&leptos_options.site_addr.port().to_string())
         )
     }
 
@@ -100,6 +96,7 @@ pub struct DatabaseConfig {
 pub struct Config {
     pub server: ServerConfig,
     pub database: DatabaseConfig,
+    pub leptos_options: LeptosOptions,
 }
 
 impl Config {
@@ -138,7 +135,13 @@ pub async fn load_config() -> Config {
         url: env::var("DATABASE_URL").expect("DATABASE_URL must be set"),
     };
 
-    Config { server, database }
+    let conf = get_configuration(None).await.unwrap();
+    let leptos_options = conf.leptos_options;
+    Config {
+        server,
+        database,
+        leptos_options,
+    }
 }
 
 pub async fn config() -> &'static Config {

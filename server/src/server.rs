@@ -19,7 +19,6 @@ use utils::db_pool::get_database_pool;
 use utils::tracing::init_tracing;
 
 static MIGRATOR: Migrator = sqlx::migrate!();
-// #[cfg(feature = "ssr")]
 
 #[tokio::main]
 async fn main() {
@@ -34,12 +33,10 @@ async fn main() {
     if config.server.is_valid_ip().unwrap() {
         info!("🚀 Server starting...");
         // Start your server here
-        let conf = get_configuration(None).await.unwrap();
-        let leptos_options = conf.leptos_options;
         let routes = generate_route_list(App);
         let app_state = AppState {
             pool: db_pool.clone(),
-            leptos: leptos_options.clone(),
+            leptos: config.leptos_options.clone(),
         };
 
         // .leptos_routes(&leptos_options,routes, App)
@@ -49,12 +46,13 @@ async fn main() {
             .merge(routes::pages::init_router())
             .with_state(app_state);
 
-        let listener = tokio::net::TcpListener::bind(&leptos_options.site_addr)
+        let listener = tokio::net::TcpListener::bind(config.server.bind_host().await)
             .await
             .unwrap();
         info!(
-            "Server is intialized and listening on: localhost:{}",
-            &leptos_options.site_addr
+            "Server is intialized and listening on: {}:{}",
+            config.server_host(),
+            config.server_port()
         );
         axum::serve(listener, app).await.unwrap();
     } else {
