@@ -39,9 +39,9 @@ async fn main() {
             leptos: config.leptos_options.clone(),
         };
 
-        // .leptos_routes(&leptos_options,routes, App)
-        // .route("/", post(server_fn_handler))
         let app = Router::new()
+            // .route("/", post(server_fn_handler))
+            // .leptos_routes(&config.leptos_options, routes, App)
             .leptos_routes_with_handler(routes, get(leptos_routes_handler))
             .merge(routes::pages::init_router())
             .with_state(app_state);

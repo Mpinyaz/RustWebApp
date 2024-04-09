@@ -1,4 +1,4 @@
-use tracing::info;
+use tracing_error::ErrorLayer;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
 
@@ -11,5 +11,6 @@ pub fn init_tracing() {
             }),
         ))
         .with(tracing_subscriber::fmt::layer().pretty())
+        .with(ErrorLayer::default())
         .init();
 }
