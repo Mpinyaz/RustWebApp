@@ -4,7 +4,8 @@
   "description": "axum postgres leptos end to end web app",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npx tailwindcss -i ./style/tailwind.css -o ./style/output.css",
+    "watch": "npx tailwindcss -i ./style/tailwind.css -o ./style/output.css"
   },
   "repository": {
     "type": "git",
