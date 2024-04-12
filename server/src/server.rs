@@ -47,6 +47,7 @@ async fn main() {
             .leptos_routes_with_handler(routes, get(leptos_routes_handler))
             .fallback(file_and_error_handler)
             .merge(routes::pages::init_router())
+            .layer(tower_http::trace::TraceLayer::new_for_http())
             .with_state(app_state);
 
         let listener = tokio::net::TcpListener::bind(config.server.bind_host().await)

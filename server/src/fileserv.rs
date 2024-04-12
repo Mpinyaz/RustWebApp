@@ -1,3 +1,4 @@
+use app::error_template::{AppError, ErrorTemplate};
 use app::App;
 use axum::response::Response as AxumResponse;
 use axum::{
@@ -40,4 +41,15 @@ async fn get_static_file(uri: Uri, root: &str) -> Result<Response<Body>, (Status
             format!("Something went wrong: {err}"),
         )),
     }
+}
+
+pub async fn not_found_response(req: Request<Body>, options: &LeptosOptions) -> AxumResponse {
+    tracing::warn!("404 not_found_response for: {:?}", req.uri());
+    let mut errors = Errors::default();
+    errors.insert_with_default_key(AppError::NotFound);
+    let handler = leptos_axum::render_app_to_stream(
+        options.to_owned(),
+        move || view! {<ErrorTemplate outside_errors=errors.clone()/>},
+    );
+    handler(req).await.into_response()
 }
