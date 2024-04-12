@@ -11,9 +11,10 @@ leptos_meta.workspace = true
 leptos_router.workspace = true
 leptos_axum = { workspace = true, optional = true }
 cfg-if.workspace = true
-
+thiserror.workspace = true
+http.workspace = true
 
 [features]
-default = []
+default = ["ssr"]
 hydrate = ["leptos/hydrate", "leptos_meta/hydrate", "leptos_router/hydrate"]
 ssr = ["leptos/ssr", "leptos_meta/ssr", "leptos_router/ssr", "dep:leptos_axum"]

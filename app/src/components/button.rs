@@ -1,10 +1,8 @@
 use leptos::*;
-use leptos_dom::*;
-use leptos_router::*;
 
 #[component]
 pub fn Button(
-    children: Chidren,
+    children: Children,
     #[prop(optional)] class: String,
     #[prop(optional, into)] button_type: String,
 ) -> impl IntoView {

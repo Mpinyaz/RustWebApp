@@ -14,3 +14,8 @@ log.workspace = true
 console_error_panic_hook.workspace = true
 console_log.workspace = true
 wasm-bindgen.workspace = true
+tracing.workspace = true
+
+
+[features]
+hydrate = ["leptos/hydrate"]

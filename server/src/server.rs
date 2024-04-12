@@ -1,13 +1,15 @@
 // Axum web app server
 mod db;
+mod fileserv;
+mod handlers;
 mod models;
 mod routes;
 mod utils;
 
-mod handlers;
 use app::*;
 use axum::routing::get;
 use axum::Router;
+use fileserv::file_and_error_handler;
 use handlers::main_handlers::*;
 use leptos::*;
 use leptos_axum::{generate_route_list, LeptosRoutes};
@@ -43,6 +45,7 @@ async fn main() {
             // .route("/", post(server_fn_handler))
             // .leptos_routes(&config.leptos_options, routes, App)
             .leptos_routes_with_handler(routes, get(leptos_routes_handler))
+            .fallback(file_and_error_handler)
             .merge(routes::pages::init_router())
             .with_state(app_state);
 

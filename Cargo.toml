@@ -2,6 +2,12 @@
 resolver = "2"
 members = ["app", "client", "server"]
 
+[workspace.package]
+version = "0.1.0"
+authors = ["Mpinyaz"]
+description = "A Rust app built with Axum, Leptos, SQLx - PostgreSQL, TailwindCSS, and more"
+edition = "2021"
+
 [profile.release]
 codegen-units = 1
 lto = true
@@ -34,6 +40,7 @@ tower = "0.4.13"
 tower-http = { version = "0.5.2", features = ["full"] }
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter", "json"] }
+thiserror = { version = "1.0.58" }
 tracing-error = { version = "0.2.0" }
 uuid = { version = "1.8.0", features = ["v4", "serde"] }
 leptos = { version = "0.6.10", features = ["nightly"] }
@@ -41,24 +48,24 @@ leptos_meta = { version = "0.6.10", features = ["nightly"] }
 leptos_router = { version = "0.6.10", features = ["nightly"] }
 leptos_axum = { version = "0.6.10" }
 wasm-bindgen = "=0.2.92"
-
+http = { version = "1.1.0" }
 [[workspace.metadata.leptos]]
-name = "rust-web-axum"
+name = "leptos_app"
 bin-package = "server"
 lib-package = "client"
-output-name = "leptos-app"
+output-name = "leptos_app"
 site-pkg-dir = "pkg"
 site-root = "target/site"
 tailwind-input-file = "style/tailwind.css"
+tailwind-config-file = "tailwind.config.js"
 style-file = "style/output.css"
-tailwind-config-file = "./tailwind.config.js"
 # assets-dir = "public"
 site-addr = "127.0.0.1:4141"
 reload-port = 4142
 browserquery = "defaults"
 watch = false
 env = "DEV"
-bin-features = []
-bin-default-features = false
-lib-features = []
-lib-default-features = false
+bin-features = ["ssr"]
+# bin-default-features = false
+lib-features = ["hydrate"]
+# lib-default-features = false
