@@ -1,4 +1,4 @@
-use app::*;
+use app::App;
 use leptos::*;
 use tracing::info;
 use wasm_bindgen::prelude::wasm_bindgen;
